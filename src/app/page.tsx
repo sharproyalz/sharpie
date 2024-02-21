@@ -4,11 +4,12 @@ import { Star } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import TruncateWord from "~/components/truncate-word";
-import Loading from "./loading";
+import { getCategories } from "~/utils/get-categories";
 
 export default function HomePage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [category, setCategory] = useState("");
 
   const fetchProducts = async () => {
     try {
@@ -31,23 +32,43 @@ export default function HomePage() {
     // Fetch notifications when the component mounts and when userId changes
     fetchProducts();
   }, []);
-  console.log(products);
+
+  let filteredCategories = products;
+
+  if (category !== "") {
+    filteredCategories = products.filter((prod) => prod.category === category);
+  }
 
   return (
     <>
-      <NavigationBar />
+      <NavigationBar products={products as Product[]} />
 
-      <main className="w-full px-8">
-        <div className="my-8 h-40 w-full rounded-sm bg-secondary"></div>
+      <main className="w-full p-8">
+        <div className="mb-8 h-40 w-full rounded-sm bg-secondary">
+          {/* {getCategories(products).map((category, categoryIdx) => (
+            <div key={categoryIdx} className="text-white text-4xl">
+              {category}
+            </div>
+          ))} */}
+        </div>
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-8 rounded-sm bg-secondary p-4">
             <div className="flex items-center gap-4">
               <label className="font-semibold text-white_accent">
                 Categories
               </label>
-              <select name="" id="" className="rounded-sm px-4 py-2">
+              <select
+                name=""
+                id=""
+                onChange={(e) => setCategory(e.target.value)}
+                className="rounded-sm px-4 py-2 capitalize"
+              >
                 <option value="">All</option>
-                <option value="">ASDSADSADSA</option>
+                {getCategories(products).map((category, categoryIdx) => (
+                  <option value={category} className="capitalize">
+                    {category}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -55,7 +76,8 @@ export default function HomePage() {
               <label className="font-semibold text-white_accent">Price</label>
               <select name="" id="" className="rounded-sm px-4 py-2">
                 <option value="">All</option>
-                <option value="">ASDSADSADSA</option>
+                <option value="">Lowest to Highest</option>
+                <option value="">Highest to Lowest</option>
               </select>
             </div>
 
@@ -63,7 +85,8 @@ export default function HomePage() {
               <label className="font-semibold text-white_accent">Ratings</label>
               <select name="" id="" className="rounded-sm px-4 py-2">
                 <option value="">All</option>
-                <option value="">ASDSADSADSA</option>
+                <option value="">Lowest to Highest</option>
+                <option value="">Highest to Lowest</option>
               </select>
             </div>
           </div>
@@ -90,7 +113,7 @@ export default function HomePage() {
                 <span className="sr-only">Loading...</span>
               </div>
             ) : (
-              products?.map((product, productIdx) => (
+              filteredCategories?.map((product, productIdx) => (
                 <div
                   key={productIdx}
                   className="col-span-1 flex flex-col items-center rounded-sm bg-secondary p-2"

@@ -1,6 +1,14 @@
 import { ShoppingCart } from "lucide-react";
+import { useState } from "react";
 
-export default function NavigationBar() {
+export default function NavigationBar({ products }: { products: Product[] }) {
+  const [inputActive, setInputActive] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+
+  const filteredProducts = products.filter((country) => {
+    return country.title.toLowerCase().match(searchInput.toLowerCase());
+  });
+
   return (
     <>
       <div className="flex items-center justify-between gap-8 bg-primary px-4 py-2 text-white_accent">
@@ -29,8 +37,20 @@ export default function NavigationBar() {
             id="default-search"
             className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2 ps-10 text-sm text-gray-900"
             placeholder="Search Clothers, Bags..."
+            onChange={(e) => setSearchInput(e.target.value)}
+            onFocus={() => setInputActive(true)}
+            onBlur={() => setInputActive(false)}
             required
           />
+          <div
+            className={`${inputActive ? "" : "hidden"} absolute top-10 max-h-[40vh] w-full overflow-auto bg-white`}
+          >
+            {filteredProducts?.map((prod, prodIdx) => (
+              <div key={prodIdx} className="p-2 text-sm text-black">
+                {prod.title}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex w-fit items-center gap-4">

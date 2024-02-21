@@ -11,6 +11,9 @@ dependencies:
   next:
     specifier: 14.1.0
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
+  prettier:
+    specifier: ^3.2.5
+    version: 3.2.5
   react:
     specifier: ^18
     version: 18.2.0
@@ -40,9 +43,6 @@ devDependencies:
   postcss:
     specifier: ^8
     version: 8.4.35
-  prettier:
-    specifier: 3.2.5
-    version: 3.2.5
   prettier-plugin-tailwindcss:
     specifier: ^0.5.11
     version: 0.5.11(prettier@3.2.5)
@@ -2248,7 +2248,6 @@ packages:
     resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: true
 
   /prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
