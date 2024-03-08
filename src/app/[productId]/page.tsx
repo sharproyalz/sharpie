@@ -196,9 +196,10 @@ export default function ProductPage() {
                         ? parseInt(quantity, 10)
                         : (quantity as number);
 
-                    currQty > 1 && setQuantity(currQty - 1);
+                    setQuantity(currQty - 1);
                   }}
-                  className="border border-primary p-2"
+                  className={`${quantity == 1 ? "cursor-not-allowed opacity-50" : ""} border border-primary p-2`}
+                  disabled={(quantity as number) < 2}
                 >
                   <Minus size={16} />
                 </button>
@@ -237,12 +238,12 @@ export default function ProductPage() {
               >
                 Cancel
               </button>
-              <button
-                type="button"
+              <Link
+                href={`/${productId}/checkout/${quantity}`}
                 className="rounded-sm bg-primary p-2 font-merriweather text-sm font-bold text-white_accent"
               >
                 CHECKOUT
-              </button>
+              </Link>
             </div>
           </div>
         </div>
