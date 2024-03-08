@@ -1,6 +1,8 @@
 "use client";
 
 import { Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import TruncateWord from "~/components/truncate-word";
@@ -43,7 +45,7 @@ export default function HomePage() {
     <>
       <NavigationBar products={products as Product[]} />
 
-      <main className="w-full p-8">
+      <main className="mx-auto my-0 w-full max-w-screen-lg p-8">
         <div className="mb-8 h-40 w-full rounded-sm bg-secondary">
           {/* {getCategories(products).map((category, categoryIdx) => (
             <div key={categoryIdx} className="text-white text-4xl">
@@ -114,7 +116,8 @@ export default function HomePage() {
               </div>
             ) : (
               filteredCategories?.map((product, productIdx) => (
-                <div
+                <Link
+                  href={`/${product.id}`}
                   key={productIdx}
                   className="col-span-1 flex flex-col items-center rounded-sm bg-secondary p-2"
                 >
@@ -142,7 +145,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))
             )}
           </div>

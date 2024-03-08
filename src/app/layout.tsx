@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { Suspense } from "react";
+import "~/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Sharpie | Shop All You Can",

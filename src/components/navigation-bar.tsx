@@ -1,4 +1,5 @@
-import { ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingCart, X } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function NavigationBar({ products }: { products: Product[] }) {
@@ -12,7 +13,9 @@ export default function NavigationBar({ products }: { products: Product[] }) {
   return (
     <>
       <div className="flex items-center justify-between gap-8 bg-primary px-4 py-2 text-white_accent">
-        <div className="font-merriweather text-xl font-medium">SHARPIE</div>
+        <Link href="/" className="font-merriweather text-xl font-medium">
+          SHARPIE
+        </Link>
 
         <div className="relative w-full">
           <div className="pointer-events-none absolute bottom-0 start-0 top-0 flex items-center ps-3">
@@ -54,9 +57,9 @@ export default function NavigationBar({ products }: { products: Product[] }) {
         </div>
 
         <div className="flex w-fit items-center gap-4">
-          <div>
+          <button type="button">
             <ShoppingCart />
-          </div>
+          </button>
           <button
             type="button"
             className="whitespace-nowrap font-merriweather text-xl font-medium"
@@ -71,6 +74,8 @@ export default function NavigationBar({ products }: { products: Product[] }) {
           </button>
         </div>
       </div>
+
+      
     </>
   );
 }
