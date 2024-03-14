@@ -24,7 +24,7 @@ export default function HomePage() {
       const productData = await productResponse.json();
       setProducts(productData);
     } catch (error) {
-      console.error("Error fetching current user:", error.message);
+      console.error("Error fetching current user:", error);
     } finally {
       setIsLoading(false);
     }
