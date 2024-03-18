@@ -1,5 +1,6 @@
 "use client";
 
+import { Product } from "@prisma/client";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,20 +10,24 @@ import TruncateWord from "~/components/truncate-word";
 import { getCategories } from "~/utils/get-categories";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<(Product & {rating: Rating})[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
 
   const fetchProducts = async () => {
     try {
-      const productResponse = await fetch("https://fakestoreapi.com/products", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      const productResponse = await fetch(
+        "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/products",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      ); 
+      
       const productData = await productResponse.json();
-      setProducts(productData);
+      console.log(productData)
     } catch (error) {
       console.error("Error fetching current user:", error);
     } finally {
@@ -41,6 +46,7 @@ export default function HomePage() {
     filteredCategories = products.filter((prod) => prod.category === category);
   }
 
+  console.log(products);
   return (
     <>
       <NavigationBar products={products as Product[]} />
@@ -67,7 +73,11 @@ export default function HomePage() {
               >
                 <option value="">All</option>
                 {getCategories(products).map((category, categoryIdx) => (
-                  <option value={category} className="capitalize">
+                  <option
+                    key={categoryIdx}
+                    value={category}
+                    className="capitalize"
+                  >
                     {category}
                   </option>
                 ))}
@@ -141,7 +151,7 @@ export default function HomePage() {
                         <Star size={16} />
                       </div>
                       <div className="text-sm text-white_accent">
-                        {product.rating.rate} - {product.rating.count}
+                        {product.rating.rate ?? 0} - {product.rating.count ?? 0}
                       </div>
                     </div>
                   </div>

@@ -20,7 +20,8 @@ model Product {
   description String
   category    String
   image       String
-  rating      Rating?
+  rating      Rating?   @relation(fields: [ratingId], references: [id])
+  ratingId    Int?
   cart        Cart?     @relation(fields: [cartId], references: [id])
   cartId      Int?
   checkout    Checkout? @relation(fields: [checkoutId], references: [id])
@@ -28,11 +29,10 @@ model Product {
 }
 
 model Rating {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   rate      Float
   count     Int
-  product   Product? @relation(fields: [productId], references: [id])
-  productId Int?     @unique
+  product   Product[]
 }
 
 model Cart {

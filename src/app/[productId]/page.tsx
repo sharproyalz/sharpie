@@ -7,6 +7,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import TruncateWord from "~/components/truncate-word";
+import { PrismaClient } from "@prisma/client";
 
 export default function ProductPage() {
   const params = useParams();
@@ -45,6 +46,18 @@ export default function ProductPage() {
   if (category !== "") {
     filteredCategories = products.filter((prod) => prod.category === category);
   }
+
+  const prisma = new PrismaClient();
+
+  const addToCart = async () => {
+    const addItem = await prisma.cart.create({
+      data: {
+        product: {
+          connect: { id: productId }, // Assuming productId is the ID of the product you want to add to the cart
+        },
+      },
+    });
+  };
 
   return (
     <>
@@ -114,6 +127,7 @@ export default function ProductPage() {
                 <div className="mt-2 flex justify-end gap-4">
                   <button
                     type="button"
+                    onClick={() => addToCart()}
                     className="flex items-center rounded-sm p-2 text-sm hover:bg-primary"
                   >
                     <ShoppingCart />
