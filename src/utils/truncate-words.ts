@@ -1,6 +1,6 @@
-export default function TruncateWord({ word }: { word: string }) {
+export function TruncateWord(word: string) {
   let maxLength = 25;
-  if (word.length > maxLength) {
+  if (word?.length > maxLength) {
     return (
       word.slice(0, maxLength - 3) +
       "..." +

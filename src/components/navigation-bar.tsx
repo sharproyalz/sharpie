@@ -1,11 +1,21 @@
-import { Product } from "@prisma/client";
-import { Minus, Plus, ShoppingCart, X } from "lucide-react";
+import { Cart } from "@prisma/client";
+import { Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { TruncateWord } from "~/utils/truncate-words";
 
-export default function NavigationBar({ products }: { products: Product[] }) {
+export default function NavigationBar({
+  products,
+  cart,
+  deleteCart,
+}: {
+  products: Product[];
+  cart: Cart[];
+  deleteCart: (id: Number) => Promise<void>;
+}) {
   const [inputActive, setInputActive] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [showCart, setShowCart] = useState(false);
 
   const filteredProducts = products.filter((country) => {
     return country.title.toLowerCase().match(searchInput.toLowerCase());
@@ -13,7 +23,7 @@ export default function NavigationBar({ products }: { products: Product[] }) {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-8 bg-primary px-4 py-2 text-white_accent">
+      <div className="relative z-10 flex items-center justify-between gap-8 bg-primary px-4 py-2 text-white_accent">
         <Link href="/" className="font-merriweather text-xl font-medium">
           SHARPIE
         </Link>
@@ -58,9 +68,68 @@ export default function NavigationBar({ products }: { products: Product[] }) {
         </div>
 
         <div className="flex w-fit items-center gap-4">
-          <button type="button">
-            <ShoppingCart />
-          </button>
+          <div className="relative">
+            <button type="button" onClick={() => setShowCart(!showCart)}>
+              {cart?.length ? (
+                <div className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-sm font-bold text-white_accent">
+                  {cart?.length}
+                </div>
+              ) : (
+                ""
+              )}
+              <ShoppingCart />
+            </button>
+
+            {showCart && (
+              <div className="absolute right-0 flex h-[60vh] w-[400px] flex-col gap-4 overflow-auto rounded-sm border border-black bg-white_accent p-4">
+                <div className="text-xl font-bold text-black_accent">
+                  My Cart
+                </div>
+                {cart?.map((cart, arrIdx) => (
+                  <div
+                    key={cart.id}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center bg-white">
+                        <img
+                          src={products[cart.productId]?.image}
+                          alt={products[cart.productId]?.title}
+                          width={20}
+                          height={20}
+                        />
+                      </div>
+                      <div className="text-black_accent">
+                        <div className="text-sm font-bold ">
+                          {TruncateWord(products[cart.productId]?.title)}
+                        </div>
+                        <div className="text-sm">Quantity: {cart.quantity}</div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => deleteCart(cart?.productId)}
+                      className="rounded-sm p-1 text-black hover:bg-red-600 hover:text-white"
+                    >
+                      <Trash2 />
+                    </button>
+                  </div>
+                ))}
+                {cart?.length ? (
+                  <div className="absolute bottom-0 left-0 flex w-full items-center justify-end p-4">
+                    <button
+                      type="button"
+                      className="rounded-sm bg-primary p-2 font-bold"
+                    >
+                      CHECK OUT
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            )}
+          </div>
           <button
             type="button"
             className="whitespace-nowrap font-merriweather text-xl font-medium"
@@ -75,8 +144,6 @@ export default function NavigationBar({ products }: { products: Product[] }) {
           </button>
         </div>
       </div>
-
-      
     </>
   );
 }

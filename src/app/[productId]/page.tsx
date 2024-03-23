@@ -1,18 +1,22 @@
 "use client";
 
+import { Cart } from "@prisma/client";
 import { Minus, Plus, ShoppingBag, ShoppingCart, Star, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
-import TruncateWord from "~/components/truncate-word";
-import { PrismaClient } from "@prisma/client";
+import { TruncateWord } from "~/utils/truncate-words";
 
 export default function ProductPage() {
+  const host =
+    "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/cart";
   const params = useParams();
   const productId = +params.productId;
   const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<Cart[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState<string | number>("1");
@@ -37,31 +41,112 @@ export default function ProductPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCart();
   }, []);
 
   const selectedProduct = products.filter((prod) => prod.id === productId)[0];
-
   let filteredCategories = products;
 
   if (category !== "") {
     filteredCategories = products.filter((prod) => prod.category === category);
   }
 
-  const prisma = new PrismaClient();
-
-  const addToCart = async () => {
-    const addItem = await prisma.cart.create({
-      data: {
-        product: {
-          connect: { id: productId }, // Assuming productId is the ID of the product you want to add to the cart
+  const fetchCart = async () => {
+    try {
+      const cartResponse = await fetch(`${host}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
-    });
+      });
+      const cartData = await cartResponse.json();
+      setCart(cartData);
+      triggerFunction();
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    }
   };
+
+  const triggerFunction = () => {};
+
+  const addToCart = async (productId: Number, quantity: Number) => {
+    try {
+      const productResponse = await fetch(`${host}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          productId: Number(productId) - 1,
+          quantity: +quantity,
+        }),
+      });
+
+      triggerFunction();
+      const productData = await productResponse.json();
+      console.log("New product:", productData);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    }
+  };
+
+  const updateCart = async () => {
+    if (!productId ?? !quantity) {
+      console.error("productId and quantity must be defined.");
+      return;
+    }
+    try {
+      const productResponse = await fetch(`${host}?id=${productId - 1}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: productId - 1,
+          quantity: +quantity, // Convert quantity to a number
+        }),
+      });
+
+      if (!productResponse.ok) {
+        throw new Error("Failed to update cart item.");
+      }
+
+      const productData = await productResponse.json();
+      console.log("Updated product:", productData);
+    } catch (error) {
+      console.error("Error updating cart itemClient:", error);
+    }
+  };
+
+  const deleteCart = async (id: Number) => {
+    try {
+      console.log(id);
+      const productResponse = await fetch(`${host}?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!productResponse.ok) {
+        throw new Error("Failed to delete cart item.");
+      }
+
+      const productData = await productResponse.json();
+      console.log("Deleted product:", productData);
+    } catch (error) {
+      console.error("Error updating cart itemClient:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, [triggerFunction]);
 
   return (
     <>
-      <NavigationBar products={products} />
+      <NavigationBar products={products} cart={cart} deleteCart={deleteCart} />
 
       {isLoading ? (
         <div
@@ -106,14 +191,14 @@ export default function ProductPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 text-sm">
-                  {selectedProduct?.rating.rate}
+                  {selectedProduct?.rating?.rate ?? 0}
                   <span className="text-yellow-400">
                     <Star size={16} />
                   </span>
                 </div>
 
                 <div className="text-sm">
-                  Ratings: {selectedProduct?.rating.count}
+                  Ratings: {selectedProduct?.rating?.count ?? 0}
                 </div>
               </div>
 
@@ -127,7 +212,7 @@ export default function ProductPage() {
                 <div className="mt-2 flex justify-end gap-4">
                   <button
                     type="button"
-                    onClick={() => addToCart()}
+                    onClick={() => setCheckoutModal(true)}
                     className="flex items-center rounded-sm p-2 text-sm hover:bg-primary"
                   >
                     <ShoppingCart />
@@ -165,7 +250,7 @@ export default function ProductPage() {
                     />
                   </div>
                   <div className="mt-4 self-start text-white_accent">
-                    <TruncateWord word={product?.title as string} />
+                    {TruncateWord(product?.title as string)}
                   </div>
                   <div className="mt-8 flex w-full justify-between self-start">
                     <div className="font-bold text-primary">
@@ -176,7 +261,8 @@ export default function ProductPage() {
                         <Star size={16} />
                       </div>
                       <div className="text-sm text-white_accent">
-                        {product?.rating.rate} - {product?.rating.count}
+                        {product?.rating?.rate ?? 0} -{" "}
+                        {product?.rating?.count ?? 0}
                       </div>
                     </div>
                   </div>
@@ -252,12 +338,23 @@ export default function ProductPage() {
               >
                 Cancel
               </button>
-              <Link
-                href={`/${productId}/checkout/${quantity}`}
+              <button
+                onClick={() => {
+                  const foundProduct = cart.find(
+                    (item) => item?.productId === Number(productId) - 1,
+                  );
+
+                  if (foundProduct) {
+                    updateCart();
+                  } else {
+                    addToCart(Number(productId), quantity as number);
+                  }
+                  setCheckoutModal(false);
+                }}
                 className="rounded-sm bg-primary p-2 font-merriweather text-sm font-bold text-white_accent"
               >
                 CHECKOUT
-              </Link>
+              </button>
             </div>
           </div>
         </div>

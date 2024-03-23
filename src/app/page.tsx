@@ -1,33 +1,35 @@
 "use client";
 
-import { Product } from "@prisma/client";
+import { Cart } from "@prisma/client";
 import { Star } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
-import TruncateWord from "~/components/truncate-word";
 import { getCategories } from "~/utils/get-categories";
+import { TruncateWord } from "~/utils/truncate-words";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<(Product & {rating: Rating})[]>([]);
+  const host =
+    "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/cart";
+
+  const [products, setProducts] = useState<(Product & { rating: Rating })[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState("");
+  const [cart, setCart] = useState<Cart[]>([]);
 
   const fetchProducts = async () => {
     try {
-      const productResponse = await fetch(
-        "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/products",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const productResponse = await fetch("https://fakestoreapi.com/products", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ); 
-      
+      });
+
       const productData = await productResponse.json();
-      console.log(productData)
+      setProducts(productData);
     } catch (error) {
       console.error("Error fetching current user:", error);
     } finally {
@@ -35,9 +37,25 @@ export default function HomePage() {
     }
   };
 
+  const fetchCart = async () => {
+    try {
+      const cartResponse = await fetch(`${host}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const cartData = await cartResponse.json();
+      setCart(cartData);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    }
+  };
+
   useEffect(() => {
     // Fetch notifications when the component mounts and when userId changes
     fetchProducts();
+    fetchCart()
   }, []);
 
   let filteredCategories = products;
@@ -49,7 +67,7 @@ export default function HomePage() {
   console.log(products);
   return (
     <>
-      <NavigationBar products={products as Product[]} />
+      <NavigationBar products={products} cart={cart} />
 
       <main className="mx-auto my-0 w-full max-w-screen-lg p-8">
         <div className="mb-8 h-40 w-full rounded-sm bg-secondary">
@@ -140,7 +158,7 @@ export default function HomePage() {
                     />
                   </div>
                   <div className="mt-4 self-start text-white_accent">
-                    <TruncateWord word={product.title as string} />
+                    {TruncateWord(product.title as string)}
                   </div>
                   <div className="mt-8 flex w-full justify-between self-start">
                     <div className="font-bold text-primary">
@@ -151,7 +169,8 @@ export default function HomePage() {
                         <Star size={16} />
                       </div>
                       <div className="text-sm text-white_accent">
-                        {product.rating.rate ?? 0} - {product.rating.count ?? 0}
+                        {product.rating?.rate ?? 0} -{" "}
+                        {product.rating?.count ?? 0}
                       </div>
                     </div>
                   </div>
