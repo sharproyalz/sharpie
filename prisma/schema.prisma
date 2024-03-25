@@ -15,11 +15,22 @@ datasource db {
 
 model Cart {
   id        Int       @id @default(autoincrement())
-  productId Int       @unique
+  productId Int         
   quantity  Int   
+}
+
+model CheckoutItems {
+  id        Int   @id @default(autoincrement())
+  productId Int         
+  quantity  Int
+  checkout  Checkout?       @relation(fields: [checkoutId], references: [id])
+  checkoutId    Int?  
 }
 
 model Checkout {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
+  cart      CheckoutItems[]    
 }
+
+

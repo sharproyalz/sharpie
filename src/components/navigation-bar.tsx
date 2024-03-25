@@ -117,12 +117,12 @@ export default function NavigationBar({
                 ))}
                 {cart?.length ? (
                   <div className="absolute bottom-0 left-0 flex w-full items-center justify-end p-4">
-                    <button
-                      type="button"
+                    <Link
+                      href={`/checkout`}
                       className="rounded-sm bg-primary p-2 font-bold"
                     >
                       CHECK OUT
-                    </button>
+                    </Link>
                   </div>
                 ) : (
                   ""

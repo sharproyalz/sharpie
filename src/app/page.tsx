@@ -52,22 +52,41 @@ export default function HomePage() {
     }
   };
 
+  const deleteCart = async (id: Number) => {
+    try {
+      console.log(id);
+      const productResponse = await fetch(`${host}?id=${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!productResponse.ok) {
+        throw new Error("Failed to delete cart item.");
+      }
+
+      const productData = await productResponse.json();
+      console.log("Deleted product:", productData);
+    } catch (error) {
+      console.error("Error updating cart itemClient:", error);
+    }
+  };
+
   useEffect(() => {
     // Fetch notifications when the component mounts and when userId changes
     fetchProducts();
-    fetchCart()
+    fetchCart();
   }, []);
 
   let filteredCategories = products;
-
   if (category !== "") {
     filteredCategories = products.filter((prod) => prod.category === category);
   }
 
-  console.log(products);
   return (
     <>
-      <NavigationBar products={products} cart={cart} />
+      <NavigationBar products={products} cart={cart} deleteCart={deleteCart} />
 
       <main className="mx-auto my-0 w-full max-w-screen-lg p-8">
         <div className="mb-8 h-40 w-full rounded-sm bg-secondary">
