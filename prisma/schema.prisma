@@ -15,7 +15,7 @@ datasource db {
 
 model Cart {
   id        Int       @id @default(autoincrement())
-  productId Int         
+  productId Int       @unique  
   quantity  Int   
 }
 

@@ -23,7 +23,7 @@ export default function NavigationBar({
 
   return (
     <>
-      <div className="relative z-10 flex items-center justify-between gap-8 bg-primary px-4 py-2 text-white_accent">
+      <div className="relative z-10 flex items-center justify-between gap-8 bg-primary px-12 py-2 text-white_accent">
         <Link href="/" className="font-merriweather text-xl font-medium">
           SHARPIE
         </Link>
@@ -67,7 +67,7 @@ export default function NavigationBar({
           </div>
         </div>
 
-        <div className="flex w-fit items-center gap-4">
+        <div className="flex w-fit items-center ">
           <div className="relative">
             <button type="button" onClick={() => setShowCart(!showCart)}>
               {cart?.length ? (
@@ -85,52 +85,59 @@ export default function NavigationBar({
                 <div className="text-xl font-bold text-black_accent">
                   My Cart
                 </div>
-                {cart?.map((cart, arrIdx) => (
-                  <div
-                    key={cart.id}
-                    className="flex items-center justify-between gap-4"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center bg-white">
-                        <img
-                          src={products[cart.productId]?.image}
-                          alt={products[cart.productId]?.title}
-                          width={20}
-                          height={20}
-                        />
-                      </div>
-                      <div className="text-black_accent">
-                        <div className="text-sm font-bold ">
-                          {TruncateWord(products[cart.productId]?.title)}
-                        </div>
-                        <div className="text-sm">Quantity: {cart.quantity}</div>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => deleteCart(cart?.productId)}
-                      className="rounded-sm p-1 text-black hover:bg-red-600 hover:text-white"
-                    >
-                      <Trash2 />
-                    </button>
-                  </div>
-                ))}
+                {}
                 {cart?.length ? (
-                  <div className="absolute bottom-0 left-0 flex w-full items-center justify-end p-4">
-                    <Link
-                      href={`/checkout`}
-                      className="rounded-sm bg-primary p-2 font-bold"
-                    >
-                      CHECK OUT
-                    </Link>
-                  </div>
+                  <>
+                    {cart?.map((cart) => (
+                      <div
+                        key={cart.id}
+                        className="flex items-center justify-between gap-4"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-12 w-12 items-center justify-center bg-white">
+                            <img
+                              src={products[cart.productId]?.image}
+                              alt={products[cart.productId]?.title}
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                          <div className="text-black_accent">
+                            <div className="text-sm font-bold ">
+                              {TruncateWord(products[cart.productId]?.title)}
+                            </div>
+                            <div className="text-sm">
+                              Quantity: {cart.quantity}
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => deleteCart(cart?.productId)}
+                          className="rounded-sm p-1 text-black hover:bg-red-600 hover:text-white"
+                        >
+                          <Trash2 />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="absolute bottom-0 left-0 flex w-full items-center justify-end p-4">
+                      <Link
+                        href={`/checkout`}
+                        className="rounded-sm bg-primary p-2 font-bold"
+                      >
+                        CHECK OUT
+                      </Link>
+                    </div>
+                  </>
                 ) : (
-                  ""
+                  <div className="text-center text-black_accent">
+                    There are no items in your cart.
+                  </div>
                 )}
               </div>
             )}
           </div>
-          <button
+          {/* <button
             type="button"
             className="whitespace-nowrap font-merriweather text-xl font-medium"
           >
@@ -141,7 +148,7 @@ export default function NavigationBar({
             className="whitespace-nowrap font-merriweather text-xl font-medium"
           >
             Sign up
-          </button>
+          </button> */}
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import { TruncateWord } from "~/utils/truncate-words";
+import { cartSchema } from "~/zodSchemas/cartSchemas";
 
 export default function ProductPage() {
   const host =
@@ -71,6 +72,11 @@ export default function ProductPage() {
 
   const addToCart = async (productId: Number, quantity: Number) => {
     try {
+      const cartData = cartSchema.parse({
+        productId: productId,
+        quantity: +quantity,
+      });
+
       const productResponse = await fetch(`${host}`, {
         method: "POST",
         headers: {
@@ -78,8 +84,8 @@ export default function ProductPage() {
         },
 
         body: JSON.stringify({
-          productId: Number(productId) - 1,
-          quantity: +quantity,
+          productId: cartData.productId,
+          quantity: cartData.quantity,
         }),
       });
 
@@ -97,14 +103,19 @@ export default function ProductPage() {
       return;
     }
     try {
-      const productResponse = await fetch(`${host}?id=${productId - 1}`, {
+      const cartData = cartSchema.parse({
+        productId: productId,
+        quantity: +quantity,
+      });
+
+      const productResponse = await fetch(`${host}?id=${productId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productId: productId - 1,
-          quantity: +quantity, // Convert quantity to a number
+          productId: cartData.productId,
+          quantity: cartData.quantity, // Convert quantity to a number
         }),
       });
 
@@ -121,7 +132,6 @@ export default function ProductPage() {
 
   const deleteCart = async (id: Number) => {
     try {
-      console.log(id);
       const productResponse = await fetch(`${host}?id=${id}`, {
         method: "DELETE",
         headers: {
@@ -341,7 +351,7 @@ export default function ProductPage() {
               <button
                 onClick={() => {
                   const foundProduct = cart.find(
-                    (item) => item?.productId === Number(productId) - 1,
+                    (item) => item?.productId === Number(productId),
                   );
 
                   if (foundProduct) {

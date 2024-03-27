@@ -1,4 +1,5 @@
 import prisma from "~/lib/prisma";
+import { cartSchema } from "~/zodSchemas/cartSchemas";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
 
     return Response.json(result);
   } catch (err) {
-    return err;
+    return Response.json({ message: "Add to cart failed", error: "500" });
   }
 }
 

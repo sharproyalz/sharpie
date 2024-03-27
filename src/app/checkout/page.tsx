@@ -3,7 +3,7 @@
 import { Cart } from "@prisma/client";
 import { ShoppingCart, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import { TruncateWord } from "~/utils/truncate-words";
@@ -12,9 +12,7 @@ export default function CheckoutPage() {
   const host =
     "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api";
 
-  const params = useParams();
-  const productId = +params.productId;
-  const quantity = +params.quantity;
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Cart[]>([]);
@@ -65,17 +63,16 @@ export default function CheckoutPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Your request body data here
           cart: {
-            create: [
-              { productId: 1, quantity: 1 },
-              { productId: 2, quantity: 2 },
-            ],
+            create: cart.map((cart) => {
+              return { productId: cart?.productId, quantity: cart?.quantity };
+            }),
           },
         }),
       });
       const responseData = await response.json();
       console.log("Checked-out items:", responseData);
+      router.push("/checkout/success");
     } catch (error) {
       console.error("Error:", error);
     }

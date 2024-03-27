@@ -89,12 +89,11 @@ export default function HomePage() {
       <NavigationBar products={products} cart={cart} deleteCart={deleteCart} />
 
       <main className="mx-auto my-0 w-full max-w-screen-lg p-8">
-        <div className="mb-8 h-40 w-full rounded-sm bg-secondary">
-          {/* {getCategories(products).map((category, categoryIdx) => (
-            <div key={categoryIdx} className="text-white text-4xl">
-              {category}
-            </div>
-          ))} */}
+        <div className="mb-8 flex h-40 w-full flex-col items-center justify-center gap-8 rounded-sm bg-secondary p-4 text-white_accent">
+          <div className="font-merriweather text-4xl uppercase tracking-tighter">
+            Welcome to Sharpie
+          </div>
+          <div className="text-xl ">Shop all you can!</div>
         </div>
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-8 rounded-sm bg-secondary p-4">

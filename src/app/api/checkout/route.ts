@@ -10,11 +10,7 @@ export async function POST(req: Request) {
       },
     });
 
-    const moveCartItem = await prisma.checkoutItems.create({
-      data: {
-        ...body,
-      },
-    });
+    const moveCartItem = await prisma.cart.deleteMany({});
 
     if (!result) {
       return Response.json({
@@ -29,7 +25,7 @@ export async function POST(req: Request) {
     return Response.json({
       message: "Error: Validation failed",
       status: 400,
-      error: error.message, // Include the error message in the response
+      error: error, // Include the error message in the response
     });
   }
 }

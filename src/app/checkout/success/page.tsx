@@ -1,6 +1,5 @@
 import { ClipboardCheck } from "lucide-react";
 import Link from "next/link";
-import NavigationBar from "~/components/navigation-bar";
 
 export default function CheckoutSuccess() {
   return (
@@ -15,7 +14,7 @@ export default function CheckoutSuccess() {
           Placed Order Successfully.
         </div>
         <div className="text-white_accent">
-          <ClipboardCheck height={200} width={200} />
+          <ClipboardCheck height={200} width={200} strokeWidth={"1px"} />
         </div>
         <Link
           href={"/"}
