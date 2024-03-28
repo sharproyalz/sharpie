@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import { TruncateWord } from "~/utils/truncate-words";
+import { checkoutSchema } from "~/zodSchemas/checkoutSchemas";
 
 export default function CheckoutPage() {
   const host =
@@ -52,11 +53,24 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchCart();
+    if (!cart.length) {
+      router.push("/error");
+    }
     fetchProducts();
   }, []);
 
   const checkoutItems = async () => {
     try {
+      const checkoutData = cart.map((cart) => {
+        return checkoutSchema.parse({
+          cart: {
+            productId: cart?.productId,
+            quantity: cart?.quantity,
+          },
+        });
+      });
+
+      console.log(checkoutData);
       const response = await fetch(`${host}/checkout`, {
         method: "POST",
         headers: {
@@ -64,8 +78,11 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           cart: {
-            create: cart.map((cart) => {
-              return { productId: cart?.productId, quantity: cart?.quantity };
+            create: checkoutData.map((checkout) => {
+              return {
+                productId: checkout?.cart?.productId,
+                quantity: checkout?.cart?.quantity,
+              };
             }),
           },
         }),
