@@ -2,6 +2,7 @@
 
 import { Cart } from "@prisma/client";
 import { ShoppingCart, Star, Trash2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -57,7 +58,7 @@ export default function CheckoutPage() {
       router.push("/error");
     }
     fetchProducts();
-  }, []);
+  });
 
   const checkoutItems = async () => {
     try {
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
             {cart?.map((cart, arrIdx) => (
               <div key={cart.id} className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center bg-white">
-                  <img
+                  <Image
                     src={products[cart.productId]?.image}
                     alt={products[cart.productId]?.title}
                     width={20}

@@ -2,6 +2,7 @@
 
 import { Cart } from "@prisma/client";
 import { Star } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
@@ -168,7 +169,7 @@ export default function HomePage() {
                   className="col-span-1 flex flex-col items-center rounded-sm bg-secondary p-2"
                 >
                   <div className="flex h-40 w-40 items-center justify-center bg-white">
-                    <img
+                    <Image
                       src={product.image}
                       alt={product.title}
                       width={90}

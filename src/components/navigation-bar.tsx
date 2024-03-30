@@ -1,5 +1,6 @@
 import { Cart } from "@prisma/client";
 import { Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { TruncateWord } from "~/utils/truncate-words";
@@ -95,7 +96,7 @@ export default function NavigationBar({
                       >
                         <div className="flex items-center gap-4">
                           <div className="flex h-12 w-12 items-center justify-center bg-white">
-                            <img
+                            <Image
                               src={products[cart.productId]?.image}
                               alt={products[cart.productId]?.title}
                               width={20}

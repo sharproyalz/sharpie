@@ -40,11 +40,6 @@ export default function ProductPage() {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-    fetchCart();
-  }, []);
-
   const selectedProduct = products.filter((prod) => prod.id === productId)[0];
   let filteredCategories = products;
 
@@ -62,13 +57,11 @@ export default function ProductPage() {
       });
       const cartData = await cartResponse.json();
       setCart(cartData);
-      triggerFunction();
+      fetchCart();
     } catch (error) {
       console.error("Error fetching current user:", error);
     }
   };
-
-  const triggerFunction = () => {};
 
   const addToCart = async (productId: Number, quantity: Number) => {
     try {
@@ -89,7 +82,7 @@ export default function ProductPage() {
         }),
       });
 
-      triggerFunction();
+      fetchCart();
       const productData = await productResponse.json();
       console.log("New product:", productData);
     } catch (error) {
@@ -151,8 +144,9 @@ export default function ProductPage() {
   };
 
   useEffect(() => {
+    fetchProducts();
     fetchCart();
-  }, [triggerFunction]);
+  });
 
   return (
     <>
@@ -185,7 +179,7 @@ export default function ProductPage() {
         <main className="mx-auto my-0 max-w-screen-lg p-8 text-white_accent">
           <div className="mb-8 flex w-full items-center justify-center gap-8 rounded-sm bg-secondary p-4 ">
             <div className="flex h-72 w-72 items-center justify-center bg-white">
-              <img
+              <Image
                 src={selectedProduct?.image}
                 alt={selectedProduct?.title}
                 width={140}
@@ -252,7 +246,7 @@ export default function ProductPage() {
                   className="col-span-1 flex flex-col items-center rounded-sm bg-secondary p-2"
                 >
                   <div className="flex h-40 w-40 items-center justify-center bg-white">
-                    <img
+                    <Image
                       src={product?.image}
                       alt={product?.title}
                       width={90}
