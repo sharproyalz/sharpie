@@ -4,14 +4,14 @@ import { Cart } from "@prisma/client";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavigationBar from "~/components/navigation-bar";
 import { getCategories } from "~/utils/get-categories";
 import { TruncateWord } from "~/utils/truncate-words";
 
 export default function HomePage() {
   const host =
-    "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/cart";
+    "/api/cart";
 
   const [products, setProducts] = useState<(Product & { rating: Rating })[]>(
     [],
@@ -48,6 +48,7 @@ export default function HomePage() {
       });
       const cartData = await cartResponse.json();
       setCart(cartData);
+      fetchCart()
     } catch (error) {
       console.error("Error fetching current user:", error);
     }
@@ -68,6 +69,7 @@ export default function HomePage() {
       }
 
       const productData = await productResponse.json();
+      fetchCart()
       console.log("Deleted product:", productData);
     } catch (error) {
       console.error("Error updating cart itemClient:", error);
@@ -75,9 +77,10 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    // Fetch notifications when the component mounts and when userId changes
     fetchProducts();
     fetchCart();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let filteredCategories = products;

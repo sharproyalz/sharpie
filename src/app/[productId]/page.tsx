@@ -12,7 +12,7 @@ import { cartSchema } from "~/zodSchemas/cartSchemas";
 
 export default function ProductPage() {
   const host =
-    "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api/cart";
+    "/api/cart";
   const params = useParams();
   const productId = +params.productId;
   const [products, setProducts] = useState<Product[]>([]);
@@ -57,7 +57,6 @@ export default function ProductPage() {
       });
       const cartData = await cartResponse.json();
       setCart(cartData);
-      fetchCart();
     } catch (error) {
       console.error("Error fetching current user:", error);
     }
@@ -116,6 +115,7 @@ export default function ProductPage() {
         throw new Error("Failed to update cart item.");
       }
 
+      fetchCart();
       const productData = await productResponse.json();
       console.log("Updated product:", productData);
     } catch (error) {
@@ -138,6 +138,7 @@ export default function ProductPage() {
 
       const productData = await productResponse.json();
       console.log("Deleted product:", productData);
+      fetchCart()
     } catch (error) {
       console.error("Error updating cart itemClient:", error);
     }
@@ -146,7 +147,9 @@ export default function ProductPage() {
   useEffect(() => {
     fetchProducts();
     fetchCart();
-  });
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

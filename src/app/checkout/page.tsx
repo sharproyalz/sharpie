@@ -12,7 +12,7 @@ import { checkoutSchema } from "~/zodSchemas/checkoutSchemas";
 
 export default function CheckoutPage() {
   const host =
-    "https://bug-free-space-winner-x7jp5vv7rxw2pj5p-3000.app.github.dev/api";
+    "/api";
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +45,14 @@ export default function CheckoutPage() {
         },
       });
       const cartData = await cartResponse.json();
-      setCart(cartData);
+      setCart(() => {
+        if (!cartData.length) {
+          router.push("/error");
+        } else {
+          return cartData;
+        }
+      });
+      
     } catch (error) {
       console.error("Error fetching current user:", error);
     } finally {
@@ -54,11 +61,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchCart();
-    if (!cart.length) {
-      router.push("/error");
-    }
     fetchProducts();
-  });
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkoutItems = async () => {
     try {
