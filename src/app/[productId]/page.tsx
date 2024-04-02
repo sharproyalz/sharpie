@@ -216,19 +216,19 @@ export default function ProductPage() {
               <div className="relative bottom-0 my-4 w-full">
                 <div className="h-[2px] w-full bg-white"></div>
                 <div className="mt-2 flex justify-end gap-4">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => setCheckoutModal(true)}
                     className="flex items-center rounded-sm p-2 text-sm hover:bg-primary"
                   >
                     <ShoppingCart />
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() => setCheckoutModal(true)}
                     className="flex items-center rounded-sm bg-primary p-2 font-merriweather text-sm font-bold"
                   >
-                    BUY NOW
+                    ADD TO CART
                   </button>
                 </div>
               </div>

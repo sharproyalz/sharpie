@@ -16,7 +16,6 @@ export default function HomePage() {
     [],
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [category, setCategory] = useState("");
   const [cart, setCart] = useState<Cart[]>([]);
 
   const fetchProducts = async () => {
@@ -82,9 +81,27 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let filteredCategories = products;
+  // Filters
+  const [category, setCategory] = useState("");
+  let filteredProducts = products;
   if (category !== "") {
-    filteredCategories = products.filter((prod) => prod.category === category);
+    filteredProducts = products.filter((prod) => prod.category === category);
+  }
+
+  const [pricesSort, setPricesSort] = useState("");
+  if (pricesSort === "asc") {
+    filteredProducts.sort((a, b) => a?.price - b?.price);
+  } else if (pricesSort === "desc") {
+    filteredProducts.sort((a, b) => b?.price - a?.price);
+  } else {
+  }
+
+  const [ratingsSort, setRatingsSort] = useState("");
+  if (ratingsSort === "asc") {
+    filteredProducts.sort((a, b) => a?.rating.rate - b?.rating.rate);
+  } else if (ratingsSort === "desc") {
+    filteredProducts.sort((a, b) => b?.rating.rate - a?.rating.rate);
+  } else {
   }
 
   return (
@@ -99,7 +116,7 @@ export default function HomePage() {
           <div className="text-xl ">Shop all you can!</div>
         </div>
         <section className="flex flex-col gap-4">
-          <div className="flex items-center gap-8 rounded-sm bg-secondary p-4">
+          <div className="flex items-center gap-4 rounded-sm bg-secondary p-4">
             <div className="flex items-center gap-4">
               <label className="font-semibold text-white_accent">
                 Categories
@@ -125,21 +142,48 @@ export default function HomePage() {
 
             <div className="flex items-center gap-4">
               <label className="font-semibold text-white_accent">Price</label>
-              <select name="" id="" className="rounded-sm px-4 py-2">
+              <select
+                name=""
+                id=""
+                onChange={(e) => setPricesSort(e.target.value)}
+                value={pricesSort}
+                className="rounded-sm px-4 py-2"
+                disabled={ratingsSort !== ""}
+              >
                 <option value="">All</option>
-                <option value="">Lowest to Highest</option>
-                <option value="">Highest to Lowest</option>
+                <option value="asc">Lowest to Highest</option>
+                <option value="desc">Highest to Lowest</option>
               </select>
             </div>
 
             <div className="flex items-center gap-4">
               <label className="font-semibold text-white_accent">Ratings</label>
-              <select name="" id="" className="rounded-sm px-4 py-2">
+              <select
+                name=""
+                id=""
+                onChange={(e) => setRatingsSort(e.target.value)}
+                value={ratingsSort}
+                className="rounded-sm px-4 py-2"
+                disabled={pricesSort !== ""}
+              >
                 <option value="">All</option>
-                <option value="">Lowest to Highest</option>
-                <option value="">Highest to Lowest</option>
+                <option value="asc">Lowest to Highest</option>
+                <option value="desc">Highest to Lowest</option>
               </select>
             </div>
+
+            {(pricesSort !== "" || ratingsSort !== "") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPricesSort("");
+                  setRatingsSort("");
+                }}
+                className="rounded-sm bg-white p-1 text-sm text-red-500 hover:bg-red-500 hover:text-white"
+              >
+                Clear Filter
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-5 gap-4">
@@ -164,7 +208,7 @@ export default function HomePage() {
                 <span className="sr-only">Loading...</span>
               </div>
             ) : (
-              filteredCategories?.map((product, productIdx) => (
+              filteredProducts?.map((product, productIdx) => (
                 <Link
                   href={`/${product.id}`}
                   key={productIdx}
@@ -176,6 +220,7 @@ export default function HomePage() {
                       alt={product.title}
                       width={90}
                       height={90}
+                      className="h-28 w-28"
                     />
                   </div>
                   <div className="mt-4 self-start text-white_accent">
