@@ -11,8 +11,7 @@ import { TruncateWord } from "~/utils/truncate-words";
 import { checkoutSchema } from "~/zodSchemas/checkoutSchemas";
 
 export default function CheckoutPage() {
-  const host =
-    "/api";
+  const host = "/api";
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +51,6 @@ export default function CheckoutPage() {
           return cartData;
         }
       });
-      
     } catch (error) {
       console.error("Error fetching current user:", error);
     } finally {
@@ -62,7 +60,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     fetchCart();
     fetchProducts();
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

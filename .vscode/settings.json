@@ -1,0 +1,17 @@
+{
+  "editor.fontFamily": "'Operator Mono', 'JetBrainsMono NFM', 'JetBrainsMonoNL NFM', Consolas, 'Courier New', monospace",
+  // "editor.fontLigatures": true,
+  // "editor.lineHeight": 24,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "editor.tabSize": 2,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 100,
+  "editor.guides.bracketPairs": true,
+  "editor.linkedEditing": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}

@@ -11,8 +11,7 @@ import { TruncateWord } from "~/utils/truncate-words";
 import { cartSchema } from "~/zodSchemas/cartSchemas";
 
 export default function ProductPage() {
-  const host =
-    "/api/cart";
+  const host = "/api/cart";
   const params = useParams();
   const productId = +params.productId;
   const [products, setProducts] = useState<Product[]>([]);
@@ -62,10 +61,10 @@ export default function ProductPage() {
     }
   };
 
-  const addToCart = async (productId: Number, quantity: Number) => {
+  const addToCart = async (productId: number, quantity: number) => {
     try {
       const cartData = cartSchema.parse({
-        productId: productId,
+        productId: productId - 1,
         quantity: +quantity,
       });
 
@@ -96,7 +95,7 @@ export default function ProductPage() {
     }
     try {
       const cartData = cartSchema.parse({
-        productId: productId,
+        productId: productId - 1,
         quantity: +quantity,
       });
 
@@ -138,7 +137,7 @@ export default function ProductPage() {
 
       const productData = await productResponse.json();
       console.log("Deleted product:", productData);
-      fetchCart()
+      fetchCart();
     } catch (error) {
       console.error("Error updating cart itemClient:", error);
     }
@@ -147,7 +146,7 @@ export default function ProductPage() {
   useEffect(() => {
     fetchProducts();
     fetchCart();
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -348,7 +347,7 @@ export default function ProductPage() {
               <button
                 onClick={() => {
                   const foundProduct = cart.find(
-                    (item) => item?.productId === Number(productId),
+                    (item) => item?.productId === productId - 1,
                   );
 
                   if (foundProduct) {

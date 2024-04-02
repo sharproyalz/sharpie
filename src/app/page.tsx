@@ -10,8 +10,7 @@ import { getCategories } from "~/utils/get-categories";
 import { TruncateWord } from "~/utils/truncate-words";
 
 export default function HomePage() {
-  const host =
-    "/api/cart";
+  const host = "/api/cart";
 
   const [products, setProducts] = useState<(Product & { rating: Rating })[]>(
     [],
@@ -48,7 +47,7 @@ export default function HomePage() {
       });
       const cartData = await cartResponse.json();
       setCart(cartData);
-      fetchCart()
+      fetchCart();
     } catch (error) {
       console.error("Error fetching current user:", error);
     }
@@ -69,7 +68,7 @@ export default function HomePage() {
       }
 
       const productData = await productResponse.json();
-      fetchCart()
+      fetchCart();
       console.log("Deleted product:", productData);
     } catch (error) {
       console.error("Error updating cart itemClient:", error);
