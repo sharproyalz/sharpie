@@ -95,11 +95,11 @@ export default function ProductPage() {
     }
     try {
       const cartData = cartSchema.parse({
-        productId: productId - 1,
+        productId: +productId - 1,
         quantity: +quantity,
       });
 
-      const productResponse = await fetch(`${host}?id=${productId}`, {
+      const productResponse = await fetch(`${host}?id=${productId - 1}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -350,6 +350,7 @@ export default function ProductPage() {
                     (item) => item?.productId === productId - 1,
                   );
 
+                  console.log(foundProduct);
                   if (foundProduct) {
                     updateCart();
                   } else {
